@@ -3,14 +3,22 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Notifications\VerifyEmailNotification;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Filament\Panel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasName
 {
 	/** @use HasFactory<\Database\Factories\UserFactory> */
-	use HasFactory;
+	use HasFactory, HasApiTokens;
 
 	use Notifiable;
 
@@ -20,7 +28,7 @@ class User extends Authenticatable
 	 * @var list<string>
 	 */
 	protected $fillable = [
-		'name',
+		'username',
 		'email',
 		'password',
 	];
@@ -46,5 +54,30 @@ class User extends Authenticatable
 			'email_verified_at' => 'datetime',
 			'password'          => 'hashed',
 		];
+	}
+
+	public function quizzes(): HasMany
+	{
+		return $this->hasMany(Quiz::class);
+	}
+
+	public function canAccessPanel(Panel $panel): bool
+	{
+		return $this->hasVerifiedEmail();
+	}
+
+	public function sendEmailVerificationNotification()
+	{
+		$this->notify(new VerifyEmailNotification());
+	}
+
+	public function results(): HasMany
+	{
+		return $this->hasMany(QuizResult::class);
+	}
+
+	public function getFilamentName(): string
+	{
+		return $this->username;
 	}
 }
