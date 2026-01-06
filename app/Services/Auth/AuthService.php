@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\Password;
 
 class AuthService
 {
-	public function register(array $data): User
+	public function register(array $credentials): User
 	{
 		$user = User::create([
-			'username' => $data['username'],
-			'email'    => $data['email'],
-			'password' => Hash::make($data['password']),
+			'username' => $credentials['username'],
+			'email'    => $credentials['email'],
+			'password' => Hash::make($credentials['password']),
 		]);
 		event(new Registered($user));
 
@@ -25,12 +25,15 @@ class AuthService
 		return $user;
 	}
 
-	public function login(array $data): User|null
+	public function login(array $credentials): ?User
 	{
-		if (!Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
+		if (!Auth::attempt($credentials)) {
 			return null;
 		}
-		return Auth::user();
+
+		$user = Auth::user();
+
+		return $user;
 	}
 
 	public function sendResetLink(array $data)

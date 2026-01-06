@@ -21,9 +21,31 @@ class AuthController extends Controller
 	) {
 	}
 
+	// public function login(LoginRequest $request): JsonResponse
+	// {
+	// 	$user = $this->authService->login($request->all());
+
+	// 	if (!$user) {
+	// 		return response()->json([
+	// 			'message' => 'Invalid email or password.',
+	// 		], 401);
+	// 	}
+
+	// 	$request->session()->regenerate();
+
+	// 	return response()->json([
+	// 		'message' => 'Authorization successful!',
+	// 		'user'    => [
+	// 			'id'       => $user->id,
+	// 			'username' => $user->username,
+	// 			'email'    => $user->email,
+	// 		],
+	// 	], 200);
+	// }
+
 	public function login(LoginRequest $request): JsonResponse
 	{
-		$user = $this->authService->login($request->all());
+		$user = $this->authService->login($request->validated());
 
 		if (!$user) {
 			return response()->json([
@@ -150,13 +172,17 @@ class AuthController extends Controller
 
 	public function register(RegisterRequest $request)
 	{
-		$user = $this->authService->register($request->all());
+		$user = $this->authService->register($request->validated());
 
 		$request->session()->regenerate();
 
 		return response()->json([
 			'message' => 'User registered successfully',
-			'user'    => $user,
+			'user'    => [
+				'id'       => $user->id,
+				'username' => $user->username,
+				'email'    => $user->email,
+			],
 		], 201);
 	}
 }
