@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Quizzes\Schemas;
 
+use App\Rules\MinCorrectAnswers;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
