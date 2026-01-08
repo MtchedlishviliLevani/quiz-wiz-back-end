@@ -28,9 +28,9 @@ class QuizForm
 					->required(),
 				Select::make('difficulty_id')
 					->relationship('difficulty', 'level')
-					->getOptionLabelFromRecordUsing(
-						fn ($record) => "{$record->level} ({$record->color})"
-					)
+					 ->getOptionLabelFromRecordUsing(
+					 	fn (object $record): string => "{$record->level} ({$record->color})"
+					 )
 					->required()
 					->native(false),
 				TextInput::make('title')

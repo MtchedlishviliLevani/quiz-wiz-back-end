@@ -23,7 +23,7 @@ class QuizzesTable
 					->label('Difficulty (Level)')
 					->sortable()
 					->badge()
-					->color(fn ($record) => $record->difficulty->color),
+					->color(fn (object $record): string => $record->difficulty->color),
 				TextColumn::make('difficulty.color')
 					->label('Difficulty (Color)')
 					->searchable(),
@@ -41,8 +41,6 @@ class QuizzesTable
 					->dateTime()
 					->sortable()
 					->toggleable(isToggledHiddenByDefault: true),
-			])
-			->filters([
 			])
 			->recordActions([
 				EditAction::make(),
