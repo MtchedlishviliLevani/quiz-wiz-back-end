@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Quizzes\Tables;
 
+use App\Models\Quiz;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -23,7 +24,7 @@ class QuizzesTable
 					->label('Difficulty (Level)')
 					->sortable()
 					->badge()
-					->color(fn (object $record): string => $record->difficulty->color),
+					->color(fn (Quiz $record): string => $record->difficulty->color),
 				TextColumn::make('difficulty.color')
 					->label('Difficulty (Color)')
 					->searchable(),

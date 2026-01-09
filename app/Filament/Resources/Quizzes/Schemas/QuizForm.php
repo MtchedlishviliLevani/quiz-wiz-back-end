@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Quizzes\Schemas;
 
+use App\Models\Difficulty;
 use App\Rules\MinCorrectAnswers;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -29,7 +30,7 @@ class QuizForm
 				Select::make('difficulty_id')
 					->relationship('difficulty', 'level')
 					 ->getOptionLabelFromRecordUsing(
-					 	fn (object $record): string => "{$record->level} ({$record->color})"
+					 	fn (Difficulty $record): string => "{$record->level} ({$record->color})"
 					 )
 					->required()
 					->native(false),
