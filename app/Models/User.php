@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasName, FilamentUser
 {
 	/** @use HasFactory<\Database\Factories\UserFactory> */
 	use HasFactory;
@@ -56,5 +59,15 @@ class User extends Authenticatable
 	public function results(): HasMany
 	{
 		return $this->hasMany(QuizResult::class);
+	}
+
+	public function getFilamentName(): string
+	{
+		return $this->username;
+	}
+
+	public function canAccessPanel(Panel $panel): bool
+	{
+		return $this->hasVerifiedEmail();
 	}
 }
