@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
 use App\Services\Auth\AuthService;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
@@ -12,7 +13,7 @@ class AuthController extends Controller
 	) {
 	}
 
-	public function register(RegisterRequest $request)
+	public function register(RegisterRequest $request): JsonResponse
 	{
 		$user = $this->authService->register($request->validated());
 

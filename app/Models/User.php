@@ -73,7 +73,7 @@ class User extends Authenticatable implements HasName, FilamentUser, MustVerifyE
 		return $this->hasVerifiedEmail();
 	}
 
-	public function sendEmailVerificationNotification()
+	public function sendEmailVerificationNotification(): void
 	{
 		$this->notify(new VerifyEmailNotification());
 	}
