@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Services\Auth\AuthService;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\JsonResponse;
@@ -88,5 +89,16 @@ class AuthController extends Controller
 		return response()->json([
 			'message' => __($status),
 		], 422);
+	}
+
+	public function resetPassword(ResetPasswordRequest $request): JsonResponse
+	{
+		$status = $this->authService->resetPassword($request->validated());
+
+		if ($status === Password::PASSWORD_RESET) {
+			return response()->json(['message' => 'Password reset successful.'], 200);
+		}
+
+		return response()->json(['message' => __($status)], 400);
 	}
 }
