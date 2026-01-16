@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Services\Auth\AuthService;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
@@ -27,5 +29,31 @@ class AuthController extends Controller
 				'email'    => $user->email,
 			],
 		], 201);
+	}
+
+	public function login(LoginRequest $request): JsonResponse
+	{
+		$user = $this->authService->login($request->validated());
+
+		if (!$user) {
+			return response()->json([
+				'message' => 'Invalid email or password.',
+			], 401);
+		}
+
+		return response()->json([
+			'message' => 'Authorization successful!',
+			'user'    => [
+				'id'       => $user->id,
+				'username' => $user->username,
+				'email'    => $user->email,
+			],
+		], 200);
+	}
+
+	public function verify(EmailVerificationRequest $request): JsonResponse
+	{
+		$request->fulfill();
+		return response()->json(['message' => 'Email verified.']);
 	}
 }

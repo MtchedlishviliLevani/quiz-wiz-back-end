@@ -18,4 +18,18 @@ class AuthService
 
 		return $user;
 	}
+
+	public function login(array $credentials): ?User
+	{
+		$remember = $credentials['remember_me'] ?? false;
+		unset($credentials['remember_me']);
+
+		if (!Auth::guard('web')->attempt($credentials, $remember)) {
+			return null;
+		}
+
+		session()->regenerate();
+
+		return Auth::guard('web')->user();
+	}
 }
