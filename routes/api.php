@@ -12,6 +12,7 @@ Route::middleware('guest:sanctum')->group(function (): void {
 	Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 	Route::post('register', [AuthController::class, 'register'])->name('auth.register');
 	Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('auth.forgot-password');
+	Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('auth.reset-password');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
