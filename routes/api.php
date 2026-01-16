@@ -15,14 +15,19 @@ Route::get('categories', [CategoryController::class, 'index']);
 Route::get('difficulties', [DifficultyController::class, 'index']);
 
 Route::get('quizzes', [QuizController::class, 'index']);
-Route::post('login', [AuthController::class, 'login']);
-Route::post('register', [AuthController::class, 'register']);
+
+Route::middleware('guest:sanctum')->group(function () {
+	Route::post('login', [AuthController::class, 'login']);
+	Route::post('register', [AuthController::class, 'register']);
+});
+// Route::post('login', [AuthController::class, 'login']);
+// Route::post('register', [AuthController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
-	Route::post('/logout', [AuthController::class, 'logout']);
+	Route::post('logout', [AuthController::class, 'logout']);
 });
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
 
-Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::middleware(['guest:sanctum'])->post('/forgot-password', [AuthController::class, 'forgotPassword']);
 
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
+Route::middleware(['web', 'guest:sanctum'])->post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');

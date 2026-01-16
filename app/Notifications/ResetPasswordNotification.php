@@ -46,15 +46,4 @@ class ResetPasswordNotification extends Notification
 			->subject('Reset Your Password')
 			->view('emails.reset-password', ['url' => $url, 'name' => $notifiable->username]);
 	}
-
-	/**
-	 * Get the array representation of the notification.
-	 *
-	 * @return array<string, mixed>
-	 */
-	public function toArray(object $notifiable): array
-	{
-		return [
-		];
-	}
 }

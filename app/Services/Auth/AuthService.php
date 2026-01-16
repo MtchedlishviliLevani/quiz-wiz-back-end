@@ -3,11 +3,12 @@
 namespace App\Services\Auth;
 
 use App\Models\User;
-use App\Notifications\ResetPasswordNotification;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class AuthService
 {
@@ -27,38 +28,29 @@ class AuthService
 
 	public function login(array $credentials): ?User
 	{
-		if (!Auth::attempt($credentials)) {
+		$remember = $credentials['remember_me'] ?? false;
+		unset($credentials['remember_me']);
+
+		if (!Auth::guard('web')->attempt($credentials, $remember)) {
 			return null;
 		}
 
-		$user = Auth::user();
+		session()->regenerate();
 
-		return $user;
+		return Auth::guard('web')->user();
 	}
 
-	public function sendResetLink(array $data)
-	{
-		$user = User::where('email', $data['email'])->first();
-
-		if (!$user) {
-			return false;
-		}
-
-		$token = Password::createToken($user);
-
-		$user->notify(new ResetPasswordNotification($token, $user->email));
-
-		return true;
-	}
-
-	public function resetPassword(array $data)
+	public function resetPassword(array $credentials): string
 	{
 		return Password::reset(
-			$data,
-			function ($user, $password) {
+			$credentials,
+			function (User $user, string $password) {
 				$user->forceFill([
-					'password' => Hash::make($password),
+					'password'       => Hash::make($password),
+					'remember_token' => Str::random(60),
 				])->save();
+
+				event(new PasswordReset($user));
 			}
 		);
 	}

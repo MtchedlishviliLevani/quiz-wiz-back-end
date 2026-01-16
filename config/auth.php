@@ -41,8 +41,9 @@ return [
 			'driver'   => 'session',
 			'provider' => 'users',
 		],
-		'api' => [
-			'driver'   => 'sanctum',
+
+		'filament' => [
+			'driver'   => 'session',
 			'provider' => 'users',
 		],
 	],

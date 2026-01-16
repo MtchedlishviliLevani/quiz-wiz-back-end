@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
@@ -69,6 +70,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
 	public function sendEmailVerificationNotification()
 	{
 		$this->notify(new VerifyEmailNotification());
+	}
+
+	public function sendPasswordResetNotification($token): void
+	{
+		$this->notify(new ResetPasswordNotification($token, $this->email));
 	}
 
 	public function results(): HasMany
