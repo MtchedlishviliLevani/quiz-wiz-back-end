@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
+use App\Notifications\VerifyEmailNotification;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements HasName, FilamentUser
+class User extends Authenticatable implements HasName, FilamentUser, MustVerifyEmail
 {
 	/** @use HasFactory<\Database\Factories\UserFactory> */
 	use HasFactory;
@@ -69,5 +72,15 @@ class User extends Authenticatable implements HasName, FilamentUser
 	public function canAccessPanel(Panel $panel): bool
 	{
 		return $this->hasVerifiedEmail();
+	}
+
+	public function sendEmailVerificationNotification(): void
+	{
+		$this->notify(new VerifyEmailNotification());
+	}
+
+	public function sendPasswordResetNotification($token): void
+	{
+		$this->notify(new ResetPasswordNotification($token, $this->email));
 	}
 }
