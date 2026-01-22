@@ -42,7 +42,7 @@ class Quiz extends Model
 		if (!$user) {
 			return $query;
 		}
-		return $query->whereHas('results', fn ($q) => $q->where('user_id', $user->id));
+		return $query->whereHas('results', fn (Builder $resultsQuery) => $resultsQuery->where('user_id', $user->id));
 	}
 
 	public function scopeNotCompleted(Builder $query, ?User $user): Builder
@@ -50,7 +50,7 @@ class Quiz extends Model
 		if (!$user) {
 			return $query;
 		}
-		return $query->whereDoesntHave('results', fn ($q) => $q->where('user_id', $user->id));
+		return $query->whereDoesntHave('results', fn (Builder $resultsQuery) => $resultsQuery->where('user_id', $user->id));
 	}
 
 	public function scopeFilterLevels(Builder $query, array $levels): Builder
@@ -60,7 +60,7 @@ class Quiz extends Model
 
 	public function scopeFilterCategories(Builder $query, array $categoryIds): Builder
 	{
-		return $query->whereHas('categories', fn ($q) => $q->whereIn('categories.id', $categoryIds));
+		return $query->whereHas('categories', fn (Builder $categoryQuery) => $categoryQuery->whereIn('categories.id', $categoryIds));
 	}
 
 	public function scopeSearch(Builder $query, ?string $term): Builder
