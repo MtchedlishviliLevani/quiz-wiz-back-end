@@ -28,6 +28,7 @@ class QuizQuestionsResource extends JsonResource
 				'id'            => $question->id,
 				'question'      => $question->question,
 				'number'        => $index + 1,
+				'points'        => $question->points,
 				'correct_count' => $question->answers->where('is_correct', true)->count(),
 				'answers'       => $question->answers->map(fn ($answer): array => [
 					'id'         => $answer->id,
