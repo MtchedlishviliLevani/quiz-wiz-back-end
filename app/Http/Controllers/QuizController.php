@@ -35,12 +35,12 @@ class QuizController extends Controller
 			->withCount('results')
 			->when(
 				$request->boolean('my_quizzes'),
-				fn (Builder $query) => $query->myQuizzes($user)
+				fn (Builder $query): Builder => $query->myQuizzes($user)
 			)
-			->when($request->boolean('not_completed'), fn (Builder $query) => $query->notCompleted($user))
-			->when($request->filled('levels'), fn (Builder $query) => $query->filterLevels($request->levels))
-			->when($request->filled('categories'), fn (Builder $query) => $query->filterCategories($request->categories))
-			->when($request->filled('search'), fn (Builder $query) => $query->where('title', 'like', '%' . $request->search . '%'))
+			->when($request->boolean('not_completed'), fn (Builder $query): Builder => $query->notCompleted($user))
+			->when($request->filled('levels'), fn (Builder $query): Builder => $query->filterLevels($request->levels))
+			->when($request->filled('categories'), fn (Builder $query): Builder => $query->filterCategories($request->categories))
+			->when($request->filled('search'), fn (Builder $query): Builder => $query->where('title', 'like', '%' . $request->search . '%'))
 			->sortBy($request->get('sort_by'))
 			->paginate(9);
 
@@ -88,7 +88,7 @@ class QuizController extends Controller
 	public function submitQuiz(SubmitQuizRequest $request, QuizSubmissionService $submissionService): QuizSubmitResource | JsonResponse
 	{
 		$quiz = Quiz::with([
-			'questions.answers' => fn ($q) => $q->select('id', 'question_id', 'is_correct'),
+			'questions.answers' => fn (Relation $q): Relation => $q->select('id', 'question_id', 'is_correct'),
 		])->findOrFail($request->quiz_id);
 
 		$timeSpent = $submissionService->clampTimeSpent($quiz, $request->time_spent);
