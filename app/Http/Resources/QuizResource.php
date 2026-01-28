@@ -9,7 +9,11 @@ class QuizResource extends JsonResource
 {
 	public function toArray(Request $request): array
 	{
-		$userResult = $this->results->first();
+		$userResult = auth()->check()
+	? $this->results->firstWhere('user_id', auth()->id())
+	: null;
+
+		$maxScore = (int) $this->questions()->sum('points');
 
 		return [
 			'id' => $this->id,
@@ -28,12 +32,11 @@ class QuizResource extends JsonResource
 
 			'total_users' => $this->results_count,
 
-			'total_time' => $userResult?->time_spent ?? $this->total_time,
-
 			'completed' => $userResult ? [
 				'completed_at' => $userResult->created_at,
 				'user_score'   => $userResult->score,
-				'total_points' => $userResult->total_points,
+				'max_score'    => $maxScore,
+				'total_time'   => $userResult?->time_spent,
 			] : null,
 		];
 	}

@@ -9,7 +9,7 @@ class QuizResult extends Model
 {
 	protected $table = 'quiz_results';
 
-	protected $fillable = ['user_id', 'quiz_id', 'score', 'total_points', 'time_spent'];
+	protected $fillable = ['user_id', 'quiz_id', 'score',  'time_spent'];
 
 	public function user(): BelongsTo
 	{
