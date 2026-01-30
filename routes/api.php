@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DifficultyController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\UserContactController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,3 +34,5 @@ Route::prefix('quizzes')->group(function (): void {
 	Route::get('/{quiz}/questions', [QuizController::class, 'QuizQuestions']);
 	Route::post('/submit', [QuizController::class, 'submitQuiz']);
 });
+
+Route::get('/contacts', [UserContactController::class, 'index'])->name('user-contacts');

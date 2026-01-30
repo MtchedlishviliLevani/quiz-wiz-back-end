@@ -83,4 +83,9 @@ class User extends Authenticatable implements HasName, FilamentUser, MustVerifyE
 	{
 		$this->notify(new ResetPasswordNotification($token, $this->email));
 	}
+
+	public function contacts(): HasMany
+	{
+		return $this->hasMany(UserContact::class);
+	}
 }
