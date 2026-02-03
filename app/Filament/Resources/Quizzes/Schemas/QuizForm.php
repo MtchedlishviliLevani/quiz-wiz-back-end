@@ -37,7 +37,7 @@ class QuizForm
 				TextInput::make('title')
 					->maxLength(255)
 					->required(),
-				FileUpload::make('image')
+				FileUpload::make('image')->disk('public')
 					->image()
 					->directory('quizzes')
 					->preserveFilenames(false)

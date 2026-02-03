@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class QuizResource extends JsonResource
 {
@@ -20,7 +21,8 @@ class QuizResource extends JsonResource
 
 			'is_completed' => (bool) $userResult,
 
-			'image' => $this->image,
+			'image' => Storage::disk('public')->url($this->image),
+
 			'title' => $this->title,
 
 			'categories' => $this->categories->map->only(['id', 'name']),

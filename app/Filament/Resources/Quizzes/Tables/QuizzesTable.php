@@ -30,7 +30,7 @@ class QuizzesTable
 					->searchable(),
 				TextColumn::make('title')
 					->searchable(),
-				ImageColumn::make('image'),
+				ImageColumn::make('image')->disk('public'),
 				TextColumn::make('duration')
 					->numeric()
 					->sortable(),
