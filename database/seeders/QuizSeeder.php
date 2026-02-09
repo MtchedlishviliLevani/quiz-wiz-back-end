@@ -24,7 +24,7 @@ class QuizSeeder extends Seeder
 			return;
 		}
 
-		Quiz::factory()->count(10)->make()->each(function ($quiz) use ($users, $difficulties, $categories) {
+		Quiz::factory()->count(10)->make()->each(function (Quiz $quiz) use ($users, $difficulties, $categories) {
 			$quiz->user_id = $users->random()->id;
 			$quiz->difficulty_id = $difficulties->random()->id;
 			$quiz->save();
