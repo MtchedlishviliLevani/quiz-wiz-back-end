@@ -36,7 +36,7 @@ class QuizResource extends JsonResource
 				'completed_at' => $userResult->created_at,
 				'user_score'   => $userResult->score,
 				'max_score'    => $maxScore,
-				'total_time'   => $userResult?->time_spent,
+				'total_time'   => round($userResult->time_spent / 60, 1),
 			] : null,
 		];
 	}

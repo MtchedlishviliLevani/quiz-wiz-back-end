@@ -94,7 +94,8 @@ class QuizController extends Controller
 		$timeSpent = $submissionService->clampTimeSpent($quiz, $request->time_spent);
 		$evaluation = $submissionService->evaluate($quiz, $request->answers);
 
-		if (auth()->check()) {
+		$user = $request->user();
+		if ($user && $user->hasVerifiedEmail()) {
 			$userId = auth()->id();
 			$stored = $submissionService->storeResult(
 				$quiz,
