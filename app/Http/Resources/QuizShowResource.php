@@ -14,10 +14,19 @@ class QuizShowResource extends JsonResource
 	 */
 	public function toArray(Request $request): array
 	{
+		$user = $request->user();
+
+		$hasPlayed = $user
+			&& $user->hasVerifiedEmail()
+			&& $this->results()
+				->where('user_id', $user->id)
+				->exists();
+
 		return [
 			'id'                      => $this->id,
 			'title'                   => $this->title,
 			'image'                   => $this->image,
+			'has_played'              => $hasPlayed,
 			'description'             => $this->description,
 			'instructions'            => $this->instructions,
 			'categories'              => $this->categories->map->only(['id', 'name']),

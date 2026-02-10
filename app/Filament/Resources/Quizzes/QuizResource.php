@@ -13,7 +13,6 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class QuizResource extends Resource
 {
@@ -38,10 +37,5 @@ class QuizResource extends Resource
 			'create' => CreateQuiz::route('/create'),
 			'edit'   => EditQuiz::route('/{record}/edit'),
 		];
-	}
-
-	public static function getEloquentQuery(): Builder
-	{
-		return parent::getEloquentQuery()->where('user_id', auth()->id());
 	}
 }
