@@ -1,59 +1,247 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Quiz Wiz Back-End
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based backend API for the QuizWiz platform — an interactive quiz application featuring authentication, quiz progress tracking, filtering, sorting, and an administrative dashboard. The backend is built to support a modern SPA frontend (such as Vite + React) and adheres to RESTful standards.
 
-## About Laravel
+## Table of Contents
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- [Introduction](#introduction)
+- [Prerequisites](#prerequisites)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Development](#development)
+- [Deployment](#deployment)
+- [Resources](#resources)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Introduction
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+QuizWiz is a quiz platform where users can find, take, and track quizzes.  
+This repository contains the backend API, which is responsible for:
 
-## Learning Laravel
+- User login and access control
+- Creating and managing quizzes, questions, and answers
+- Saving quiz attempts, time spent, and progress
+- Filtering, searching, and sorting quizzes
+- Showing quizzes based on user status (completed or not completed)
+- An admin panel for managing the application
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+The application includes an admin dashboard built with Filament and uses Laravel Sanctum for secure API authentication.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Prerequisites
 
-## Laravel Sponsors
+Make sure you have the following installed:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- PHP 8.2+
 
-### Premium Partners
+- Composer 2.x
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- Node.js 18+ and npm
 
-## Contributing
+- Database (MySQL 8+, SQLite, or PostgreSQL)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Tech Stack
 
-## Code of Conduct
+- Framework: Laravel 12.x
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Authentication: Laravel Sanctum
 
-## Security Vulnerabilities
+- Admin Panel: Filament v4
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Getting Started
 
-## License
+This section will guide you to set up the QuizWiz backend locally, seed the database, and run the API so your frontend can connect to it.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 1. Clone the Repository
+
+```sh
+git clone https://github.com/RedberryInternship/levan-mchedlishvili-quiz-wiz-back.git
+cd levan-mchedlishvili-quiz-wiz-back
+```
+
+### 2. Install Dependencies
+
+```sh
+composer install
+npm install
+```
+
+### 3. Configure Environment
+
+Copy the example .env file and update it with your local environment:
+```sh
+cp .env.example .env
+```
+
+Edit .env:
+```sh
+APP_NAME=QuizWiz
+APP_ENV=local
+APP_KEY=base64:GENERATED_KEY
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=quiz_wiz
+DB_USERNAME=root
+DB_PASSWORD=secret
+
+SANCTUM_STATEFUL_DOMAINS=localhost:5173
+SESSION_DOMAIN=localhost
+```
+
+Make sure APP_KEY is generated:
+```sh
+php artisan key:generate
+```
+
+
+### 4. Run Database Migrations & Seeders
+
+Make sure your database exists. Then run:
+```sh
+php artisan migrate
+php artisan db:seed
+```
+
+This will create all tables and populate them with sample data for quizzes, questions, and users.
+
+### 5. Create Storage Link (Optional)
+
+If your project serves images from storage:
+```sh
+php artisan storage:link
+```
+
+### 6. Start the Backend Server
+```sh
+php artisan serve
+```
+By default, the backend API will be available at:
+```sh
+http://localhost:8000
+```
+
+### 7. Test the API
+
+Open your browser or use Postman to test endpoints like:
+```sh
+GET http://localhost:8000/api/quizzes
+```
+
+
+### 💡 Tips:
+
+Always clear caches after changing .env:
+```sh
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+```
+
+If connected to your SPA frontend (e.g., React), make sure SANCTUM_STATEFUL_DOMAINS in .env matches your frontend domain (localhost:3000).
+
+## Development
+
+During development, the following steps and practices should be considered to ensure smooth coding, testing, and collaboration:
+
+### 1. Start the Development Server
+
+Run the Laravel development server:
+```sh
+php artisan serve
+```
+
+The API will be available at http://localhost:8000.
+
+
+### 2. Watch for Frontend Asset Changes (if using Vite or similar tool)
+
+If you have frontend assets (JS/CSS) that need compiling, keep the watch process running:
+```sh
+npm run dev
+```
+
+This ensures any changes in your JS, CSS, or Blade templates are automatically reflected in the browser.
+
+### 3. Database Management
+
+Run migrations after schema changes:
+```sh
+php artisan migrate
+```
+
+Reset database during development if needed:
+```sh
+php artisan migrate:fresh --seed
+```
+
+Always back up important data before resetting.
+
+
+## Deployment
+
+To deploy the project from development to a production server:
+
+### 1. Prepare Production Server
+
+Connect via SSH:
+```sh
+ssh user@your-server-ip
+```
+
+Navigate to your deployment folder:
+```sh
+cd /home/user/apps/quiz-wiz-back
+```
+
+Ensure Git is installed on the server.
+
+### 2. Pull the Latest Code
+
+You can use Git to update the server:
+```sh
+git pull origin main
+```
+
+### 3. Install Dependencies on Server
+```sh
+composer install 
+npm install 
+```
+
+### 4. Configure Environment
+
+Copy .env.production or update .env with production settings.
+
+Make sure database, APP_URL, and SANCTUM_STATEFUL_DOMAINS are correct.
+
+### 5. Clear and Cache
+```sh
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+This improves performance and ensures latest configurations are used.
+
+### 6. Configure Nginx 
+
+Create or edit your site configuration for Laravel:
+```sh
+sudo nano /etc/nginx/sites-available/quiz-wiz-back
+```
+
+### 7. Restart Services
+
+After configuring Nginx and PHP-FPM:
+```
+sudo systemctl restart php8.2-fpm
+sudo systemctl restart nginx
+```
+
+## Resources
+
+- Database Diagram
+
+![Project Logo](readme/quiz-wiz-sql-schema.png)
