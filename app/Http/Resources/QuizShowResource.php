@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class QuizShowResource extends JsonResource
 {
@@ -25,7 +26,8 @@ class QuizShowResource extends JsonResource
 		return [
 			'id'                      => $this->id,
 			'title'                   => $this->title,
-			'image'                   => $this->image,
+			'image'                   => Storage::disk('public')->url($this->image),
+
 			'has_played'              => $hasPlayed,
 			'description'             => $this->description,
 			'instructions'            => $this->instructions,
