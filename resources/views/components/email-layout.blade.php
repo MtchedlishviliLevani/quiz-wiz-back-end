@@ -21,7 +21,7 @@
                     
                     <tr>
                         <td align="center" style="padding-bottom: 24px;">
-                            <img src="{{ asset('images/logo.svg') }}" alt="Logo" style="display: block; max-width: 100%; height: auto;">
+                            <img alt="Logo" style="display: block; max-width: 100%; height: auto;" src="{{ url('images/logo.png') }}">
                         </td>
                     </tr>
                     
