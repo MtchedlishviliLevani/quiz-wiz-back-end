@@ -6,8 +6,9 @@ use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Models\User;
 use App\Services\Auth\AuthService;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,10 +57,18 @@ class AuthController extends Controller
 		], 200);
 	}
 
-	public function verify(EmailVerificationRequest $request): JsonResponse
+	public function verify($id, $hash): JsonResponse
 	{
-		$request->fulfill();
-		return response()->json(['message' => 'Email verified.']);
+		$user = User::findOrFail($id);
+		if (!hash_equals(sha1($user->getEmailForVerification()), $hash)) {
+			return response()->json(['message' => 'Invalid verification link'], 403);
+		}
+
+		if (!$user->hasVerifiedEmail()) {
+			$user->markEmailAsVerified();
+			event(new Verified($user));
+		}
+		return response()->json(['message' => 'Email verified']);
 	}
 
 	public function logout(Request $request): JsonResponse
