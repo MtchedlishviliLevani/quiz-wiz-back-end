@@ -57,7 +57,7 @@ class AuthController extends Controller
 		], 200);
 	}
 
-	public function verify($id, $hash): JsonResponse
+	public function verify(string $id, string $hash): JsonResponse
 	{
 		$user = User::findOrFail($id);
 		if (!hash_equals(sha1($user->getEmailForVerification()), $hash)) {
