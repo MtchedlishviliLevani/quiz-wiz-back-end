@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->group(function (): void {
 	Route::post('logout', [AuthController::class, 'logout']);
 });
 
-Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 
 Route::prefix('quizzes')->group(function (): void {
 	Route::get('/', [QuizController::class, 'index']);
