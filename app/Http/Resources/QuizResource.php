@@ -21,7 +21,9 @@ class QuizResource extends JsonResource
 
 			'is_completed' => (bool) $userResult,
 
-			'image' => Storage::disk('public')->url($this->image),
+			'image' => str_starts_with($this->image, 'http')
+    ? $this->image
+    : Storage::disk('public')->url($this->image),
 
 			'title' => $this->title,
 

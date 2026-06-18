@@ -26,8 +26,9 @@ class QuizShowResource extends JsonResource
 		return [
 			'id'                      => $this->id,
 			'title'                   => $this->title,
-			'image'                   => Storage::disk('public')->url($this->image),
-
+'image' => str_starts_with($this->image, 'http')
+    ? $this->image
+    : Storage::disk('public')->url($this->image),
 			'has_played'              => $hasPlayed,
 			'description'             => $this->description,
 			'instructions'            => $this->instructions,
