@@ -20,23 +20,6 @@ class AuthController extends Controller
         protected AuthService $authService
     ) {}
 
-    public function register(RegisterRequest $request): JsonResponse
-    {
-        $user = $this->authService->register($request->validated());
-
-        $request->session()->regenerate();
-
-        return response()->json([
-            'message' => 'User registered successfully',
-            'user' => [
-                'id' => $user->id,
-                'username' => $user->username,
-                'email' => $user->email,
-            ],
-        ], 201);
-    }
-
-
     public function verify(string $id, string $hash): JsonResponse
     {
         $user = User::findOrFail($id);

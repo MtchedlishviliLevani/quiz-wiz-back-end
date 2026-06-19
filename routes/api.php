@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserContactController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,7 +20,7 @@ Route::get('/difficulties', [DifficultyController::class, 'index'])->name('diffi
 
 Route::middleware('guest:sanctum')->group(function (): void {
 	Route::post('/login', LoginController::class)->name('auth.login')->middleware("throttle:6,1");
-	Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
+	Route::post('/register', RegisterController::class)->name('auth.register');
 	Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('auth.forgot-password');
 	Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('auth.reset-password');
 });
