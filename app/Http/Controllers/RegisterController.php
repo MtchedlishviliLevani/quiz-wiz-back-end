@@ -10,7 +10,7 @@ class RegisterController extends Controller
 {
     public function __construct(protected AuthService $authService) {}
 
-    public function register(RegisterRequest $request): JsonResponse
+    public function __invoke(RegisterRequest $request): JsonResponse
     {
         $user = $this->authService->register($request->validated());
 
