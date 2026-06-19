@@ -61,17 +61,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-	public function logout(Request $request): JsonResponse
-	{
-		Auth::guard('web')->logout();
-
-		$request->session()->invalidate();
-		$request->session()->regenerateToken();
-
-		return response()->json([
-			'message' => 'You’ve been logged out successfully.',
-		]);
-	}
 
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
     {

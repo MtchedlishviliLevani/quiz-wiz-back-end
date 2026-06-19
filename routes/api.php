@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DifficultyController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\UserContactController;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ Route::middleware('guest:sanctum')->group(function (): void {
 });
 
 Route::middleware('auth:sanctum')->group(function (): void {
-	Route::post('logout', [AuthController::class, 'logout']);
+	Route::post('logout', LogoutController::class);
 });
 
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verify'])->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
