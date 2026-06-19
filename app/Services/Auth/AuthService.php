@@ -30,8 +30,6 @@ class AuthService
 			return null;
 		}
 
-		session()->regenerate();
-
 		return Auth::guard('web')->user();
 	}
 
