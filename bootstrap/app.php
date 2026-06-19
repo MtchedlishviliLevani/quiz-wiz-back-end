@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Routing\Exceptions\InvalidSignatureException;
 
 return Application::configure(basePath: dirname(__DIR__))
 	->withRouting(
@@ -14,5 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
 	->withMiddleware(function (Middleware $middleware): void {
 		$middleware->statefulApi();
 	})
-	->withExceptions(function (Exceptions $exceptions): void {})->create()
+	->withExceptions(function (Exceptions $exceptions): void {
+		 $exceptions->render(function (InvalidSignatureException $e) {
+            return response()->json([
+                'message' => 'This verification link is invalid or has expired.',
+            ], 403);
+        });
+	})->create()
 ;
