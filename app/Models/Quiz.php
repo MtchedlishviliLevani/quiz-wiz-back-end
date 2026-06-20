@@ -80,19 +80,13 @@ class Quiz extends Model
 			return $query;
 		}
 
-		switch ($sortBy) {
-			case 'a-z':
-				return $query->orderBy('title', 'asc');
-			case 'z-a':
-				return $query->orderBy('title', 'desc');
-			case 'most_popular':
-				return $query->withCount('results')->orderBy('results_count', 'desc');
-			case 'newest':
-				return $query->orderBy('created_at', 'desc');
-			case 'oldest':
-				return $query->orderBy('created_at', 'asc');
-			default:
-				return $query;
-		}
+		return match ($sortBy) {
+			'a-z'          => $query->orderBy('title', 'asc'),
+			'z-a'          => $query->orderBy('title', 'desc'),
+			'most_popular' => $query->withCount('results')->orderBy('results_count', 'desc'),
+			'newest'       => $query->orderBy('created_at', 'desc'),
+			'oldest'       => $query->orderBy('created_at', 'asc'),
+			default        => $query,
+		};
 	}
 }
