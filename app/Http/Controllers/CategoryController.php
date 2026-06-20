@@ -9,6 +9,6 @@ class CategoryController extends Controller
 {
 	public function index(): JsonResponse
 	{
-		return response()->json(Category::orderBy('id', 'asc')->select('id', 'name')->get());
+		return  response()->json(Category::orderBy('id', 'asc')->select('id', 'name')->get());
 	}
 }

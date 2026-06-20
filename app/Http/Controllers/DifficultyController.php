@@ -10,7 +10,7 @@ class DifficultyController extends Controller
 	public function index(): JsonResponse
 	{
 		return response()->json(
-			Difficulty::orderBy('id')
+			Difficulty::orderBy('id', 'asc')
 				->select('id', 'level', 'color')
 				->get()
 		);
