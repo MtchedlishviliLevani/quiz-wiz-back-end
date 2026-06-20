@@ -6,6 +6,7 @@ use App\Models\Answer;
 use App\Models\Question;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 
 class QuizQuestionsResource extends JsonResource
 {
@@ -17,12 +18,10 @@ class QuizQuestionsResource extends JsonResource
 	public function toArray(Request $request): array
 	{
 		return [
-			'id'                      => $this->id,
-			'quiz_title'              => $this->title,
-			'categories'              => $this->categories->map->only(['id', 'name']),
-
-			'questions_count'    => $this->questions_count,
-
+			'id'                          => $this->id,
+			'quiz_title'                  => $this->title,
+			'categories'                  => $this->categories->map->only(['id', 'name']),
+			'questions_count'             => $this->questions_count,
 			'max_points'                  => (int) $this->questions->sum('points'),
 			'play_count'                  => $this->results_count,
 			'quiz_duration'               => $this->duration,
