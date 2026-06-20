@@ -21,26 +21,41 @@ class QuizController extends Controller
 	{
 		$user = auth()->user();
 
+		$with = [
+			'categories',
+			'difficulty',
+			'questions',
+		];
+
+		if ($user) {
+			$with['results'] = fn (Relation $query) => $query->where('user_id', $user->id)
+				->latest()
+				->limit(1);
+		}
+
 		$quizzes = Quiz::query()
-			->with([
-				'categories',
-				'difficulty',
-				'questions',
-				'results' => fn (Relation $resultsQuery) => $user
-					? $resultsQuery->where('user_id', $user->id)
-						->latest()
-						->limit(1)
-					: $resultsQuery->whereNull('id'),
-			])
+			->with($with)
 			->withCount('results')
 			->when(
 				$request->boolean('my_quizzes'),
-				fn (Builder $query): Builder => $query->myQuizzes($user)
+				fn (Builder $query) => $query->myQuizzes($user)
 			)
-			->when($request->boolean('not_completed'), fn (Builder $query): Builder => $query->notCompleted($user))
-			->when($request->filled('levels'), fn (Builder $query): Builder => $query->filterLevels($request->levels))
-			->when($request->filled('categories'), fn (Builder $query): Builder => $query->filterCategories($request->categories))
-			->when($request->filled('search'), fn (Builder $query): Builder => $query->where('title', 'like', '%' . $request->search . '%'))
+			->when(
+				$request->boolean('not_completed'),
+				fn (Builder $query) => $query->notCompleted($user)
+			)
+			->when(
+				$request->filled('levels'),
+				fn (Builder $query) => $query->filterLevels($request->levels)
+			)
+			->when(
+				$request->filled('categories'),
+				fn (Builder $query) => $query->filterCategories($request->categories)
+			)
+			->when(
+				$request->filled('search'),
+				fn (Builder $query) => $query->where('title', 'like', '%' . $request->search . '%')
+			)
 			->sortBy($request->get('sort_by'))
 			->paginate(9);
 
@@ -54,7 +69,7 @@ class QuizController extends Controller
 			'difficulty',
 			'questions',
 		])->loadCount('questions')
-		  ->loadCount('results');
+			->loadCount('results');
 
 		$quiz->similarQuizzes = Quiz::query()
 			->with(['categories'])
@@ -80,7 +95,7 @@ class QuizController extends Controller
 	public function QuizQuestions(Quiz $quiz): QuizQuestionsResource
 	{
 		$quiz->load(['categories', 'questions.answers'])
-		 ->loadCount(['questions', 'results']);
+			->loadCount(['questions', 'results']);
 
 		return new QuizQuestionsResource($quiz);
 	}
