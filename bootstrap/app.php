@@ -8,18 +8,23 @@ use Illuminate\Routing\Exceptions\InvalidSignatureException;
 return Application::configure(basePath: dirname(__DIR__))
 	->withRouting(
 		web: __DIR__ . '/../routes/web.php',
-		commands: __DIR__ . '/../routes/console.php',
 		api: __DIR__ . '/../routes/api.php',
+		commands: __DIR__ . '/../routes/console.php',
 		health: '/up',
 	)
 	->withMiddleware(function (Middleware $middleware): void {
 		$middleware->statefulApi();
 	})
 	->withExceptions(function (Exceptions $exceptions): void {
-		 $exceptions->render(function (InvalidSignatureException $e) {
-            return response()->json([
-                'message' => 'This verification link is invalid or has expired.',
-            ], 403);
-        });
+		$exceptions->render(function (InvalidSignatureException $e) {
+			return response()->json([
+				'message' => 'This verification link is invalid or has expired.',
+			], 403);
+		});
+		$exceptions->render(function (\App\Exceptions\QuizAlreadySubmittedException $e, $request) {
+			return response()->json([
+				'message' => 'You have already submitted this quiz.',
+			], 403);
+		});
 	})->create()
 ;
