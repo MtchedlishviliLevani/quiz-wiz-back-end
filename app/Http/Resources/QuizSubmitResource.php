@@ -15,11 +15,14 @@ class QuizSubmitResource extends JsonResource
 	public function toArray(Request $request): array
 	{
 		return [
-			'title'       => $this['title'],
-			'difficulty'  => $this['difficulty'],
-			'time_spent'  => $this['time_spent'],
-			'correct'     => $this['correct'],
-			'mistakes'    => $this['mistakes'],
+			'title'      => $this->resource['quiz']->title,
+			'difficulty' => $this->resource['quiz']->difficulty ? [
+				'level' => $this->resource['quiz']->difficulty->level,
+				'color' => $this->resource['quiz']->difficulty->color,
+			] : null,
+			'time_spent' => $this->resource['time_spent'],
+			'correct'    => $this->resource['evaluation']['correctCount'],
+			'mistakes'   => $this->resource['evaluation']['mistakes'],
 		];
 	}
 }
