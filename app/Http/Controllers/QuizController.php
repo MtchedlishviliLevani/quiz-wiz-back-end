@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\QuizAlreadySubmittedException;
 use App\Http\Requests\SubmitQuizRequest;
 use App\Http\Resources\QuizQuestionsResource;
 use App\Http\Resources\QuizResource;
@@ -11,7 +12,6 @@ use App\Models\Quiz;
 use App\Services\Quiz\QuizSubmissionService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -75,17 +75,14 @@ class QuizController extends Controller
 			->with(['categories'])
 			->withCount('results')
 			->where('id', '!=', $quiz->id)
-
 			->whereHas('categories', function (Builder $q) use ($quiz) {
 				$q->whereIn('categories.id', $quiz->categories->pluck('id'));
 			})
-
 			->when(auth()->check(), function (Builder $query) {
 				$query->whereDoesntHave('results', function (Builder $q) {
 					$q->where('user_id', auth()->id());
 				});
 			})
-
 			->limit(3)
 			->get();
 
@@ -100,41 +97,18 @@ class QuizController extends Controller
 		return new QuizQuestionsResource($quiz);
 	}
 
-	public function submitQuiz(SubmitQuizRequest $request, QuizSubmissionService $submissionService): QuizSubmitResource | JsonResponse
+
+	/**
+	 * @throws QuizAlreadySubmittedException
+	 */
+	public function submitQuiz(SubmitQuizRequest $request, QuizSubmissionService $service): QuizSubmitResource
 	{
-		$quiz = Quiz::with([
-			'questions.answers' => fn (Relation $q): Relation => $q->select('id', 'question_id', 'is_correct'),
-		])->findOrFail($request->quiz_id);
+		$result = $service->submitQuiz(
+			$request->quiz_id,
+			$request->answers,
+			$request->time_spent,
+		);
 
-		$timeSpent = $submissionService->clampTimeSpent($quiz, $request->time_spent);
-		$evaluation = $submissionService->evaluate($quiz, $request->answers);
-
-		$user = $request->user();
-		if ($user && $user->hasVerifiedEmail()) {
-			$userId = auth()->id();
-			$stored = $submissionService->storeResult(
-				$quiz,
-				$userId,
-				$evaluation['totalPoints'],
-				$timeSpent
-			);
-
-			if (!$stored) {
-				return response()->json([
-					'message' => 'You have already submitted this quiz.',
-				], 403);
-			}
-		}
-
-		return new QuizSubmitResource([
-			'title'      => $quiz->title,
-			'difficulty' => $quiz->difficulty ? [
-				'level' => $quiz->difficulty->level,
-				'color' => $quiz->difficulty->color,
-			] : null,
-			'time_spent' => $timeSpent,
-			'correct'    => $evaluation['correctCount'],
-			'mistakes'   => $evaluation['mistakes'],
-		]);
+		return new QuizSubmitResource($result);
 	}
 }
