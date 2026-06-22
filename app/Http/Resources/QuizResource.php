@@ -13,30 +13,22 @@ class QuizResource extends JsonResource
 		$userResult = auth()->check()
 	? $this->results->firstWhere('user_id', auth()->id())
 	: null;
-
 		$maxScore = (int) $this->questions()->sum('points');
 
 		return [
-			'id' => $this->id,
-
+			'id'           => $this->id,
 			'is_completed' => (bool) $userResult,
-
-			'image' => str_starts_with($this->image, 'http')
-    ? $this->image
-    : Storage::disk('public')->url($this->image),
-
-			'title' => $this->title,
-
+			'image'        => str_starts_with($this->image, 'http')
+	? $this->image
+	: Storage::disk('public')->url($this->image),
+			'title'      => $this->title,
 			'categories' => $this->categories->map->only(['id', 'name']),
-
 			'difficulty' => $this->difficulty ? [
 				'level' => $this->difficulty->level,
 				'color' => $this->difficulty->color,
 			] : null,
-
 			'total_users' => $this->results_count,
-
-			'completed' => $userResult ? [
+			'completed'   => $userResult ? [
 				'completed_at' => $userResult->created_at,
 				'user_score'   => $userResult->score,
 				'max_score'    => $maxScore,
