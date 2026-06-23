@@ -97,7 +97,6 @@ class QuizController extends Controller
 		return new QuizQuestionsResource($quiz);
 	}
 
-
 	/**
 	 * @throws QuizAlreadySubmittedException
 	 */
