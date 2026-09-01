@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Password;
 
 class ResetPasswordController extends Controller
 {
-	public function __construct(protected AuthService $authService)
-	{
-	}
+	public function __construct(protected AuthService $authService) {}
 
 	public function __invoke(ResetPasswordRequest $request): JsonResponse
 	{
@@ -22,6 +20,8 @@ class ResetPasswordController extends Controller
 			return response()->json(['message' => 'Password reset successful.'], 200);
 		}
 
-		return response()->json(['message' => __($status)], 400);
+		return response()->json([
+			'message' => 'This password reset link is invalid or has expired.',
+		], 400);
 	}
 }

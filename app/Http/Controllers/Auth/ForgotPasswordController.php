@@ -11,18 +11,10 @@ class ForgotPasswordController extends Controller
 {
 	public function __invoke(ForgotPasswordRequest $request): JsonResponse
 	{
-		$status = Password::sendResetLink(
-			$request->validated()
-		);
-
-		if ($status === Password::RESET_LINK_SENT) {
-			return response()->json([
-				'message' => __($status),
-			], 200);
-		}
+		Password::sendResetLink($request->validated());
 
 		return response()->json([
-			'message' => __($status),
-		], 422);
+			'message' => 'If an account exists for that email address, a password reset link is on its way.',
+		], 200);
 	}
 }

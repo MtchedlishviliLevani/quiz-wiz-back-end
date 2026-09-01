@@ -22,9 +22,9 @@ Route::get('/difficulties', [DifficultyController::class, 'index'])->name('diffi
 
 Route::middleware('guest:sanctum')->group(function (): void {
 	Route::post('/login', LoginController::class)->name('auth.login')->middleware('throttle:6,1');
-	Route::post('/register', RegisterController::class)->name('auth.register');
-	Route::post('/forgot-password', ForgotPasswordController::class)->name('auth.forgot-password');
-	Route::post('/reset-password', ResetPasswordController::class)->name('auth.reset-password');
+	Route::post('/register', RegisterController::class)->name('auth.register')->middleware('throttle:register');
+	Route::post('/forgot-password', ForgotPasswordController::class)->name('auth.forgot-password')->middleware('throttle:password-reset');
+	Route::post('/reset-password', ResetPasswordController::class)->name('auth.reset-password')->middleware('throttle:password-reset');
 });
 
 Route::middleware('auth:sanctum')->group(function (): void {
