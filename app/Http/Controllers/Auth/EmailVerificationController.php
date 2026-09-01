@@ -3,33 +3,21 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Config;
 
 class EmailVerificationController extends Controller
 {
-	public function __invoke(string $id, string $hash): JsonResponse
+	public function __invoke(EmailVerificationRequest $request): RedirectResponse
 	{
-		$user = User::findOrFail($id);
+		$request->fulfill();
 
-		if (!hash_equals($hash, sha1($user->getEmailForVerification()))) {
-			return response()->json([
-				'message' => 'Invalid or tampered verification link.',
-			], 403);
-		}
+		return redirect()->away(self::redirectUrl('verified'));
+	}
 
-		if ($user->hasVerifiedEmail()) {
-			return response()->json([
-				'message' => 'Email already verified.',
-			], 200);
-		}
-
-		$user->markEmailAsVerified();
-		event(new Verified($user));
-
-		return response()->json([
-			'message' => 'Email verified successfully.',
-		], 200);
+	public static function redirectUrl(string $status): string
+	{
+		return Config::get('app.frontend_url') . '/verify-email?' . http_build_query(['status' => $status]);
 	}
 }

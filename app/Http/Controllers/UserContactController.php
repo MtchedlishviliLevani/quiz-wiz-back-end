@@ -8,12 +8,6 @@ class UserContactController extends Controller
 {
 	public function index(): JsonResponse
 	{
-		if (!auth()->check()) {
-			return response()->json(['message' => 'Unauthorized'], 401);
-		}
-
-		$contacts = auth()->user()->contacts;
-
-		return response()->json($contacts);
+		return response()->json(auth()->user()->contacts);
 	}
 }
