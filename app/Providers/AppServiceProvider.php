@@ -25,15 +25,11 @@ class AppServiceProvider extends ServiceProvider
 		$this->configureRateLimiting();
 	}
 
-
 	protected function configurePasswordDefaults(): void
 	{
 		Password::defaults(fn(): Password => Password::min(8)->letters()->numbers());
 	}
 
-	/**
-	 * Named rate limiters for the unauthenticated auth endpoints.
-	 */
 	protected function configureRateLimiting(): void
 	{
 		RateLimiter::for('register', fn(Request $request): Limit => Limit::perMinute(5)->by($request->ip()));
