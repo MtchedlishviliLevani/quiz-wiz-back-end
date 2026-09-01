@@ -18,6 +18,8 @@ class AuthService
 
 		event(new Registered($user));
 
+		Auth::guard('web')->login($user);
+
 		return $user;
 	}
 

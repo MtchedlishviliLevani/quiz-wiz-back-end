@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Services\Auth\AuthService;
 use Illuminate\Http\JsonResponse;
 
@@ -17,15 +18,9 @@ class RegisterController extends Controller
 	{
 		$user = $this->authService->register($request->validated());
 
-		$request->session()->regenerate();
-
 		return response()->json([
 			'message' => 'User registered successfully',
-			'user'    => [
-				'id'       => $user->id,
-				'username' => $user->username,
-				'email'    => $user->email,
-			],
+			'user'    => new UserResource($user),
 		], 201);
 	}
 }
